@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "697112417734",
+    "firebase_url": "https://shopapp-dd862.firebaseio.com",
+    "project_id": "shopapp-dd862",
+    "storage_bucket": "shopapp-dd862.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697112417734:android:bd81c272222951cb798ec7",
+        "android_client_info": {
+          "package_name": "com.example.shopapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "697112417734-u4df87suclolau8vkbr1pt3akjdnl2pv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyaw7jpnWiD3KMtHq-Sglodbf44f6M-Vg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "697112417734-u4df87suclolau8vkbr1pt3akjdnl2pv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
