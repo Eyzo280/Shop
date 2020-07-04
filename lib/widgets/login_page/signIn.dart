@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopapp/providers/auth.dart';
 
 class Login {
   String email;
@@ -30,7 +32,9 @@ class _SignInState extends State<SignIn> {
     password: '',
   );
 
-  void _saveForm() {
+  bool _loading = false;
+
+  void _saveForm() async {
     if (!_form.currentState.validate()) {
       return;
     }
@@ -39,6 +43,41 @@ class _SignInState extends State<SignIn> {
     print('Login');
     print(_data.email);
     print(_data.password);
+    setState(() {
+      _loading = true;
+    });
+
+    try {
+      await Provider.of<Auth>(context, listen: false)
+          .signInWithEmailAndPassword(
+              email: _data.email, password: _data.password);
+      // Zalogowano
+      print('Zalogowano');
+    } catch (err) {
+      // Nie zalogowano
+      // print('Nie zalogowano.');
+      String message = '';
+      if (err.toString().contains('ERROR_USER_NOT_FOUND')) {
+        message = 'There is no such account.'; // Takie konto nie istnieje.
+      } else {
+        message =
+            'Check the email and password.'; // Sprawdz poprawnosc email i hasla.
+      }
+
+      setState(() {
+        Scaffold.of(context).hideCurrentSnackBar();
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Container(child: Text(message)),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20),),
+            ),
+          ),
+        );
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -117,7 +156,7 @@ class _SignInState extends State<SignIn> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: FlatButton(
-                        onPressed: () {},
+                        onPressed: _loading ? null : () {},
                         child: Text(
                           'Forgot Password? ',
                           style: Theme.of(context).textTheme.bodyText1,
@@ -132,18 +171,28 @@ class _SignInState extends State<SignIn> {
           Container(
             width: double.infinity,
             child: RaisedButton(
-              onPressed: () {
-                _saveForm();
-              },
+              onPressed: _loading
+                  ? null
+                  : () {
+                      _saveForm();
+                    },
               elevation: 10,
-              color: Colors.purple,
-              child: Text(
-                'Login',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    .copyWith(color: Colors.white),
-              ),
+              child: _loading
+                  ? Container(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).buttonColor),
+                      ),
+                    )
+                  : Text(
+                      'Login',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(color: Colors.white),
+                    ),
             ),
           ),
           Row(
@@ -151,10 +200,12 @@ class _SignInState extends State<SignIn> {
             children: <Widget>[
               Text('Don\' have an account?'),
               FlatButton(
-                onPressed: () {
-                  widget.changePage();
-                  print('Sign Up');
-                },
+                onPressed: _loading
+                    ? null
+                    : () {
+                        widget.changePage();
+                        print('Sign Up');
+                      },
                 padding: EdgeInsets.all(0),
                 child: Text(
                   'Sign Up',

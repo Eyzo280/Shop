@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopapp/providers/auth.dart';
 
 class Register {
   String email;
@@ -34,7 +37,9 @@ class _SignUpState extends State<SignUp> {
     displayName: '',
   );
 
-  void _saveForm() {
+  bool loading = false;
+
+  void _saveForm() async {
     if (!_form.currentState.validate()) {
       return;
     }
@@ -44,6 +49,50 @@ class _SignUpState extends State<SignUp> {
     print(_data.email);
     print(_data.password);
     print(_data.displayName);
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      var register = await Provider.of<Auth>(context, listen: false)
+          .signUpWithEmailAndPassword(
+        email: _data.email,
+        password: _data.password,
+        displayName: _data.displayName,
+      );
+      // Utworzyło nowe konto
+      print('Zarejestrowano');
+    } catch (err) {
+      // Nie utworzyło nowego konta
+
+      String message = '';
+      if (err.toString().contains('ERROR_INVALID_EMAIL')) {
+        message = 'Check email.'; // Podano zly email.
+      } else if (err.toString().contains('ERROR_EMAIL_ALREADY_IN_USE')) {
+        message = 'This email is used.'; // Ten email jest zajety.
+      } else {
+        message =
+            'Check the email and password.'; // Sprawdz poprawnosc email i hasla.
+      }
+
+      setState(() {
+        Scaffold.of(context).hideCurrentSnackBar();
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Container(child: Text(message)),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+          ),
+        );
+        loading = false;
+      });
+
+      print('Wystapil problem przy rejestracji.');
+    }
   }
 
   @override
@@ -158,18 +207,28 @@ class _SignUpState extends State<SignUp> {
           Container(
             width: double.infinity,
             child: RaisedButton(
-              onPressed: () {
-                _saveForm();
-              },
+              onPressed: loading
+                  ? null
+                  : () {
+                      _saveForm();
+                    },
               elevation: 10,
-              color: Colors.purple,
-              child: Text(
-                'Register',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    .copyWith(color: Colors.white),
-              ),
+              child: loading
+                  ? Container(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).buttonColor),
+                      ),
+                    )
+                  : Text(
+                      'Register',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(color: Colors.white),
+                    ),
             ),
           ),
           Row(
@@ -177,10 +236,12 @@ class _SignUpState extends State<SignUp> {
             children: <Widget>[
               Text('Do you have account?'),
               FlatButton(
-                onPressed: () {
-                  widget.changePage();
-                  print('Sign in');
-                },
+                onPressed: loading
+                    ? null
+                    : () {
+                        widget.changePage();
+                        print('Sign in');
+                      },
                 padding: EdgeInsets.all(0),
                 child: Text(
                   'Sign in',

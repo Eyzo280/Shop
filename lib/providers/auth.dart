@@ -29,7 +29,7 @@ class Auth {
       await user.updateProfile(updateInfo);
       return user;
     } catch (err) {
-      print(err);
+      throw err;
     }
   }
 
@@ -40,6 +40,14 @@ class Auth {
           email: email, password: password);
       FirebaseUser user = result.user;
       return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  Future signOut() async {
+    try {
+      return await _auth.signOut();
     } catch (err) {
       print(err);
     }
