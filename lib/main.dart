@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
 import 'package:shopapp/pages/login.dart';
 import 'package:shopapp/pages/shop.dart';
 import 'package:shopapp/providers/auth.dart';
+import 'package:shopapp/providers/products.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,6 +32,7 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            buttonTheme: ButtonThemeData(buttonColor: Colors.purple),
             appBarTheme: AppBarTheme(color: Colors.purple),
             buttonColor: Colors.purple,
             disabledColor: Colors.purple[200],
@@ -38,7 +41,12 @@ class MyApp extends StatelessWidget {
               elevation: 10,
             ),
           ),
-          home: auth != null ? Shop() : LoginPage(),
+          home: auth != null
+              ? StreamProvider<List<Product>>.value(
+                  value: Products().streamProducts,
+                  child: Shop(),
+                )
+              : LoginPage(),
           initialRoute: '/',
           routes: {
             // LoginPage.routeName: (context) => LoginPage(),
