@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopapp/models/product.dart';
+import 'package:shopapp/providers/cart.dart';
 
 class ProductDetail extends StatelessWidget {
-  final String createUid;
-  final String description;
-  final String imageUrl;
-  final String name;
-  final double price;
+  final Product product;
 
   ProductDetail({
-    @required this.createUid,
-    @required this.description,
-    @required this.imageUrl,
-    @required this.name,
-    @required this.price,
+    @required this.product,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(product.name),
         centerTitle: true,
       ),
       body: Container(
@@ -27,7 +22,7 @@ class ProductDetail extends StatelessWidget {
           children: <Widget>[
             Flexible(
               fit: FlexFit.tight,
-              child: Image.network(imageUrl),
+              child: Image.network(product.imageUrl),
             ),
             Flexible(
               fit: FlexFit.tight,
@@ -40,30 +35,35 @@ class ProductDetail extends StatelessWidget {
                     children: <Widget>[
                       Flexible(
                         fit: FlexFit.tight,
-                        child: FlatButton(
-                          onPressed: () {
-                            print('Add to cart');
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text(
-                                '${price.toString()} \$',
-                                style: TextStyle(
-                                    color: Theme.of(context).buttonColor),
-                              ),
-                              Text(
-                                'Add To Cart',
-                                style: TextStyle(
-                                    color: Theme.of(context).buttonColor),
-                              ),
-                              Icon(
-                                Icons.add_shopping_cart,
-                                color: Theme.of(context).buttonColor,
-                              )
-                            ],
-                          ),
-                        ),
+                        child: Builder(builder: (BuildContext ctx) { // Builder byl potrzebny, aby mozna tu bylo uzywac SnackBar
+                          return FlatButton(
+                            onPressed: () {
+                              Provider.of<Cart>(context, listen: false)
+                                  .addItemToCart(ctx: ctx,productUid: product.uid, name: product.name, imageUrl: product.imageUrl, price: product.price);
+                              
+                              print('Add to cart');
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Text(
+                                  '${product.price.toString()} \$',
+                                  style: TextStyle(
+                                      color: Theme.of(context).buttonColor),
+                                ),
+                                Text(
+                                  'Add To Cart',
+                                  style: TextStyle(
+                                      color: Theme.of(context).buttonColor),
+                                ),
+                                Icon(
+                                  Icons.add_shopping_cart,
+                                  color: Theme.of(context).buttonColor,
+                                )
+                              ],
+                            ),
+                          );
+                        }),
                       ),
                       const Divider(),
                       Flexible(

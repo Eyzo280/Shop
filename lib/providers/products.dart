@@ -8,6 +8,7 @@ class Products {
   List<Product> _product(QuerySnapshot snap) {
     return snap.documents.map((DocumentSnapshot doc) {
       return Product(
+        uid: doc.documentID,
         createUid: doc['createUid'] ?? null,
         description: doc['description'] ?? null,
         imageUrl: doc['imageUrl'] ?? null,

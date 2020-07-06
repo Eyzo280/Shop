@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
+import 'package:shopapp/providers/cart.dart';
 import 'package:shopapp/widgets/product_detail.dart';
 
 class ProductWidget extends StatelessWidget {
@@ -20,11 +22,7 @@ class ProductWidget extends StatelessWidget {
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ProductDetail(
-                createUid: product.createUid,
-                description: product.description,
-                imageUrl: product.imageUrl,
-                name: product.name,
-                price: product.price,
+                product: product,
               );
             }));
             print('Product Detail');
@@ -59,6 +57,12 @@ class ProductWidget extends StatelessWidget {
                 fit: FlexFit.tight,
                 child: FlatButton(
                   onPressed: () {
+                    Provider.of<Cart>(context, listen: false).addItemToCart(
+                        ctx: context,
+                        productUid: product.uid,
+                        name: product.name,
+                        imageUrl: product.imageUrl,
+                        price: product.price);
                     print('Add new product');
                   },
                   child: const Icon(Icons.shopping_cart),
