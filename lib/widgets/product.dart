@@ -62,6 +62,7 @@ class ProductWidget extends StatelessWidget {
                         productUid: product.uid,
                         name: product.name,
                         imageUrl: product.imageUrl,
+                        decription: product.description,
                         price: product.price);
                     print('Add new product');
                   },

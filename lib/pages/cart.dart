@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/models/product.dart';
+import 'package:shopapp/models/user.dart';
+import 'package:shopapp/widgets/cart_page/buttonPay.dart';
+import 'package:shopapp/widgets/product_detail.dart';
 import '../providers/cart.dart' as cartdata;
 import 'package:shopapp/models/cart.dart';
 
@@ -58,7 +62,22 @@ class Cart extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      // Mozna przerobic na Routes
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ProductDetail(
+                          product: Product(
+                              createUid: '',
+                              description: cartProducts[index].decription,
+                              name: cartProducts[index].name,
+                              price: cartProducts[index].price,
+                              imageUrl: cartProducts[index].imageUrl,
+                              uid: cartProducts[index].uid),
+                        );
+                      }));
+                      print('Detail');
+                    },
                     leading: Image.network(cartProducts[index].imageUrl),
                     title: Text(cartProducts[index].name),
                     trailing: Text('Count: ${cartProducts[index].quantity}'),
@@ -73,6 +92,7 @@ class Cart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userUid = Provider.of<User>(context).uid;
     var cart = Provider.of<cartdata.Cart>(context);
     List<CartItem> cartProducts = cart.productsFromCart;
 
@@ -95,6 +115,8 @@ class Cart extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: CartButtonPayment(),
     );
   }
 }

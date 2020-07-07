@@ -39,7 +39,7 @@ class ProductDetail extends StatelessWidget {
                           return FlatButton(
                             onPressed: () {
                               Provider.of<Cart>(context, listen: false)
-                                  .addItemToCart(ctx: ctx,productUid: product.uid, name: product.name, imageUrl: product.imageUrl, price: product.price);
+                                  .addItemToCart(ctx: ctx,productUid: product.uid, name: product.name, imageUrl: product.imageUrl, decription: product.description, price: product.price);
                               
                               print('Add to cart');
                             },

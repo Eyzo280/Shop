@@ -56,10 +56,15 @@ class Shop extends StatelessWidget {
                 ),
               );
             },
-            child: IconButton(
-              icon: const Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.pushNamed(context, page.Cart.routeName);
+            child: Builder( // builder jest potrzebny poniewaz removeCurrentSnackBar() ma problem z innym contextem
+              builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Scaffold.of(context).removeCurrentSnackBar();
+                    Navigator.pushNamed(context, page.Cart.routeName);
+                  },
+                );
               },
             ),
           ),
