@@ -15,7 +15,8 @@ class Shop extends StatelessWidget {
 
     var user = Provider.of<User>(context);
     List<Product> products = Provider.of<List<Product>>(context) ?? null;
-
+    print(products);
+    Future.delayed(Duration(seconds: 5)).then((value) => print(products));
     return Scaffold(
       appBar: AppBar(
         title: Text('Shop'),

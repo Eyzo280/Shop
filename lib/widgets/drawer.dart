@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/user.dart';
+import '../providers/cart.dart' as cartData;
+import 'package:shopapp/pages/orders.dart';
 import 'package:shopapp/providers/auth.dart';
+import 'package:shopapp/providers/products.dart';
 
 class DrawerApp extends StatelessWidget {
   @override
@@ -48,7 +51,10 @@ class DrawerApp extends StatelessWidget {
                           builder: (context, auth, _) {
                             return IconButton(
                                 icon: const Icon(Icons.exit_to_app),
-                                onPressed: auth.signOut);
+                                onPressed: () {
+                                  Provider.of<cartData.Cart>(context, listen: false).clearData();
+                                  auth.signOut();
+                                });
                           },
                         ),
                       ],
@@ -62,7 +68,9 @@ class DrawerApp extends StatelessWidget {
                   */
               ),
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/');
+                },
                 child: ListTile(
                   leading: const Icon(
                     Icons.shop,
@@ -84,7 +92,9 @@ class DrawerApp extends StatelessWidget {
               ),
               const Divider(),
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/Orders');
+                },
                 child: ListTile(
                   leading: const Icon(
                     Icons.credit_card,

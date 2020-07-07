@@ -141,4 +141,8 @@ class Cart with ChangeNotifier {
 
     return totalprice;
   }
+
+  void clearData() {
+    _cart.clear();
+  }
 }
