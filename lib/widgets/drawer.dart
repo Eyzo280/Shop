@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/user.dart';
+import 'package:shopapp/providers/orders.dart';
 import '../providers/cart.dart' as cartData;
 import 'package:shopapp/pages/orders.dart';
 import 'package:shopapp/providers/auth.dart';
@@ -53,6 +54,7 @@ class DrawerApp extends StatelessWidget {
                                 icon: const Icon(Icons.exit_to_app),
                                 onPressed: () {
                                   Provider.of<cartData.Cart>(context, listen: false).clearData();
+                                  Provider.of<Orders>(context, listen: false).clear();
                                   auth.signOut();
                                 });
                           },

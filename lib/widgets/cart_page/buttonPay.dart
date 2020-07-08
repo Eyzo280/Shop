@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/user.dart';
+import 'package:shopapp/providers/orders.dart';
 import '../../providers/cart.dart';
 
 class CartButtonPayment extends StatefulWidget {
@@ -28,6 +29,7 @@ class _CartButtonPaymentState extends State<CartButtonPayment> {
                     await cart
                         .buyProductsFromCart(userUid: userUid)
                         .then((value) {
+                          Provider.of<Orders>(context,listen: false).addOrder(order: value);
                       setState(() {
                         loadingPayment = false;
                       });

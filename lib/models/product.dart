@@ -17,3 +17,17 @@ class Product {
     @required this.price,
   });
 }
+
+class ProductFromOrder {
+  String description;
+  String imageUrl;
+  String name;
+  int quantity;
+
+  ProductFromOrder({
+    this.description,
+    this.imageUrl,
+    this.name,
+    this.quantity,
+  });
+}

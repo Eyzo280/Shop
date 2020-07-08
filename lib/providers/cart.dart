@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shopapp/models/cart.dart';
+import 'package:shopapp/models/order.dart';
 import 'package:shopapp/widgets/snackBar.dart';
 
 class Cart with ChangeNotifier {
@@ -88,6 +89,16 @@ class Cart with ChangeNotifier {
     @required String userUid,
   }) async {
     try {
+      Order order = Order(
+        // Wartosc zwracana, aby miec dane do dodania w ordersach w providerze
+        uid: null,
+        countProducts: null,
+        dateOfPurchase: null,
+        delivery: null,
+        paided: null,
+        payment: null,
+        totalPrice: null,
+      );
       if (_cart.isNotEmpty) {
         DocumentReference doc =
             _firestore.document(userUid).collection('Orders').document();
@@ -96,7 +107,18 @@ class Cart with ChangeNotifier {
           'TotalPrice': totalPrice,
           'CountProducts': countProductsFromCart,
           'DateOfPurchase': DateTime.now().toIso8601String(),
+          'Delivery': true,
+          'Paided': true,
         }).then((value) {
+          order = Order(
+            uid: doc.documentID,
+            countProducts: countProductsFromCart,
+            dateOfPurchase: DateTime.now().toIso8601String(),
+            delivery: true,
+            paided: true,
+            payment: 'Cash',
+            totalPrice: totalPrice,
+          );
           for (var _productUid in _cart.keys) {
             doc.collection('Products').document(_productUid).setData({
               'name': _cart[_productUid].name,
@@ -109,6 +131,7 @@ class Cart with ChangeNotifier {
           _cart.clear();
           notifyListeners();
         });
+        return order;
       } else {
         print('Cart is Empty');
       }
