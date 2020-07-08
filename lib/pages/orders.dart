@@ -51,99 +51,125 @@ class _OrdersPageState extends State<OrdersPage> {
         centerTitle: true,
       ),
       drawer: DrawerApp(),
-      body: Column(
-        children: <Widget>[
-          Flexible(
-            fit: FlexFit.tight,
-            child: Row(
-              children: <Widget>[
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        filter = 'All';
-                      });
-                    },
-                    child: Center(
-                      child: Text('All'),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: InkWell(
-                    onTap: () {},
-                    child: Center(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: const [Colors.blue, Colors.purple],
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              fit: FlexFit.tight,
+              child: Card(
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      fit: FlexFit.tight,
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            filter = 'Paided';
+                            filter = 'All';
                           });
                         },
-                        child: Center(
-                          child: Text('Paided'),
+                        child: Container(
+                          color: filter == 'All'
+                              ? Color.fromRGBO(0, 0, 0, 0.2)
+                              : Color.fromRGBO(0, 0, 0, 0),
+                          child: Center(
+                            child: Text('All'),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        filter = 'Finished';
-                      });
-                    },
-                    child: Center(
-                      child: Text('Finished'),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: InkWell(
+                        onTap: () {},
+                        child: Center(
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                filter = 'Paided';
+                              });
+                            },
+                            child: Container(
+                              color: filter == 'Paided'
+                              ? Color.fromRGBO(0, 0, 0, 0.3)
+                              : Color.fromRGBO(0, 0, 0, 0),
+                              child: Center(
+                                child: Text('Paided'),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(),
-          Flexible(
-            flex: 5,
-            fit: FlexFit.tight,
-            child: !_isData
-                ? SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: FittedBox(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : Consumer<Orders>(
-                    builder: (context, orders, _) {
-                      return ListView.builder(
-                        itemCount: filter == 'Paided'
-                            ? orders.ordersPaided.length
-                            : filter == 'Finished'
-                                ? orders.ordersFinished.length
-                                : orders.orders.length,
-                        itemBuilder: (context, index) {
-                          if (filter == 'Paided') {
-                            return Order(
-                              orderUid: orders.ordersPaided[index].uid,
-                            );
-                          } else if (filter == 'Finished') {
-                            return Order(
-                              orderUid: orders.ordersFinished[index].uid,
-                            );
-                          } else {
-                            return Order(
-                              orderUid: orders.orders[index].uid,
-                            );
-                          }
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            filter = 'Finished';
+                          });
                         },
-                      );
-                    },
-                  ),
-          ),
-        ],
+                        child: Container(
+                          color: filter == 'Finished'
+                              ? Color.fromRGBO(0, 0, 0, 0.3)
+                              : Color.fromRGBO(0, 0, 0, 0),
+                          child: Center(
+                            child: Text('Finished'),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Divider(),
+            Flexible(
+              flex: 5,
+              fit: FlexFit.tight,
+              child: !_isData
+                  ? SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: FittedBox(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : Consumer<Orders>(
+                      builder: (context, orders, _) {
+                        return ListView.builder(
+                          itemCount: filter == 'Paided'
+                              ? orders.ordersPaided.length
+                              : filter == 'Finished'
+                                  ? orders.ordersFinished.length
+                                  : orders.orders.length,
+                          itemBuilder: (context, index) {
+                            if (filter == 'Paided') {
+                              return Order(
+                                orderUid: orders.ordersPaided[index].uid,
+                              );
+                            } else if (filter == 'Finished') {
+                              return Order(
+                                orderUid: orders.ordersFinished[index].uid,
+                              );
+                            } else {
+                              return Order(
+                                orderUid: orders.orders[index].uid,
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

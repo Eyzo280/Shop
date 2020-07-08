@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
 import 'package:shopapp/pages/login.dart';
+import 'package:shopapp/pages/manage_products.dart';
 import 'package:shopapp/pages/orders.dart';
 import './providers/orders.dart';
 import 'package:shopapp/pages/shop.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           // LoginPage.routeName: (context) => LoginPage(),
           OrdersPage.routeName: (_) => OrdersPage(),
           page.Cart.routeName: (_) => page.Cart(),
+          ManageProducts.routeName: (_) => ManageProducts(),
         },
       );
     }
@@ -60,6 +62,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: Orders(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Products(),
         ),
       ],
       child: Consumer<User>(builder: (context, auth, _) {

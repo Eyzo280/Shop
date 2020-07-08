@@ -83,7 +83,9 @@ class DrawerApp extends StatelessWidget {
               ),
               const Divider(),
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/ManageProducts');
+                },
                 child: ListTile(
                   leading: Icon(
                     Icons.edit,
