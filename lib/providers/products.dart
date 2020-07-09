@@ -5,7 +5,7 @@ import 'package:shopapp/models/product.dart';
 class Products with ChangeNotifier {
   final _firestore = Firestore.instance.collection('Products');
 
-  List<Product> _myProducts = [];
+  Map<String, Product> _myProducts = {};
 
   List<Product> _product(QuerySnapshot snap) {
     return snap.documents.map((DocumentSnapshot doc) {
@@ -28,19 +28,49 @@ class Products with ChangeNotifier {
             .getDocuments()
             .then((value) {
           for (var doc in value.documents) {
-            _myProducts.add(Product(
-              uid: doc.data['uid'] ?? null,
-              createUid: doc.data['createUid'] ?? null,
-              description: doc.data['description'] ?? null,
-              imageUrl: doc.data['imageUrl'] ?? null,
-              name: doc.data['name'] ?? null,
-              price: doc.data['price'] ?? null,
-            ));
+            _myProducts.putIfAbsent(
+                doc.documentID,
+                () => Product(
+                      uid: doc.documentID ?? null,
+                      createUid: doc.data['createUid'] ?? null,
+                      description: doc.data['description'] ?? null,
+                      imageUrl: doc.data['imageUrl'] ?? null,
+                      name: doc.data['name'] ?? null,
+                      price: doc.data['price'] ?? null,
+                    ));
           }
         }).whenComplete(() {
           notifyListeners();
         });
       }
+    } catch (err) {
+      print(err);
+    }
+  }
+
+  Future editMyProduct({Product product}) async {
+    try {
+      await Firestore.instance
+          .collection('Products')
+          .document(product.uid)
+          .updateData({
+        'description': product.description,
+        'imageUrl': product.imageUrl,
+        'name': product.name,
+        'price': product.price,
+      }).whenComplete(() {
+        _myProducts.update(
+            product.uid,
+            (value) => Product(
+                  uid: product.uid ?? value.uid,
+                  createUid: product.createUid ?? value.createUid,
+                  description: product.description ?? value.description,
+                  imageUrl: product.imageUrl ?? value.imageUrl,
+                  name: product.name ?? value.name,
+                  price: product.price ?? value.price,
+                ));
+        notifyListeners();
+      });
     } catch (err) {
       print(err);
     }
@@ -53,6 +83,10 @@ class Products with ChangeNotifier {
   }
 
   List<Product> get myProducts {
-    return _myProducts;
+    List<Product> list = [];
+    _myProducts.forEach((key, value) {
+      list.add(value);
+    });
+    return list;
   }
 }

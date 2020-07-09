@@ -53,7 +53,7 @@ class _ManageProductsState extends State<ManageProducts> {
       body: _loading ? CircularProgressIndicator() : ListView.builder(
         itemCount: myProducts.length,
         itemBuilder: (context, index) {
-        return MyProduct(product: myProducts[index],);
+        return MyProduct(index: index);
       }),
     );
   }
