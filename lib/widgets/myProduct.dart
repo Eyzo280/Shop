@@ -24,9 +24,9 @@ class _MyProductState extends State<MyProduct> {
     uid: null,
     createUid: null,
     description: null,
-    imageUrl: null,
+    imageUrl: '',
     name: null,
-    price: null,
+    price: 0.0,
   );
 
   void saveProduct(userUid) async {
@@ -102,12 +102,6 @@ class _MyProductState extends State<MyProduct> {
             if (widget.index == null && val.isEmpty) {
               return 'Enter name.';
             }
-            /*
-                          if (val.isEmpty) {
-                            return 'Name can\'t be empty.';
-                          }
-                          */
-
             return null;
           },
           decoration: InputDecoration(
@@ -145,8 +139,8 @@ class _MyProductState extends State<MyProduct> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.symmetric(vertical: 5),
-          child: Text('Image Url:'),
+          margin: const EdgeInsets.symmetric(vertical: 5),
+          child: const Text('Image Url:'),
         ),
         TextFormField(
           validator: (val) {
@@ -164,6 +158,18 @@ class _MyProductState extends State<MyProduct> {
           },
           decoration: InputDecoration(
               border: OutlineInputBorder(), hintText: product.imageUrl),
+          onFieldSubmitted: (val) {
+            setState(() {
+              _editProduct = Product(
+                uid: product.uid,
+                createUid: product.createUid,
+                description: product.description,
+                imageUrl: val,
+                name: _editProduct.name,
+                price: _editProduct.price,
+              );
+            });
+          },
           onSaved: (val) {
             if (val.isEmpty) {
               _editProduct = Product(
@@ -195,8 +201,8 @@ class _MyProductState extends State<MyProduct> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.symmetric(vertical: 5),
-          child: Text('Price:'),
+          margin: const EdgeInsets.symmetric(vertical: 5),
+          child: const Text('Price:'),
         ),
         TextFormField(
           validator: (val) {
@@ -261,7 +267,7 @@ class _MyProductState extends State<MyProduct> {
             return null;
           },
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             hintText: product.description,
           ),
           maxLines: null,
@@ -310,7 +316,7 @@ class _MyProductState extends State<MyProduct> {
                   ? SizedBox(
                       height: 25,
                       width: 25,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ))
                   : Row(
@@ -319,14 +325,14 @@ class _MyProductState extends State<MyProduct> {
                           Icons.save,
                           color: Colors.white,
                         ),
-                        Text(
+                        const Text(
                           'Save',
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
                     ),
             ),
-            disabledColor: Color.fromRGBO(128, 0, 128, 0.8),
+            disabledColor: const Color.fromRGBO(128, 0, 128, 0.8),
           ),
         ),
       ],
@@ -354,8 +360,10 @@ class _MyProductState extends State<MyProduct> {
     var userUid = Provider.of<User>(context).uid;
     return Card(
       child: ListTile(
-        leading: SizedBox(
-            height: 50, width: 50, child: Image.network(product.imageUrl)),
+        leading:  _editProduct.imageUrl != ''
+            ?  Image.network(_editProduct.imageUrl)
+            : product.imageUrl != '' ? SizedBox(
+                height: 50, width: 50, child: Image.network(product.imageUrl)) : Image.asset('images/empty_url.png'),
         title: _edit
             ? Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -374,7 +382,7 @@ class _MyProductState extends State<MyProduct> {
                 ),
               )
             : Text(product.name),
-        subtitle: _edit ? SizedBox() : Text('Price: ${product.price}'),
+        subtitle: _edit ? const SizedBox() : Text('Price: ${product.price}'),
         trailing: IconButton(
           onPressed: widget.index == null
               ? () {
@@ -387,7 +395,7 @@ class _MyProductState extends State<MyProduct> {
                   });
                   print('Edit');
                 },
-          icon: widget.index == null ? Icon(Icons.close) : Icon(Icons.edit),
+          icon: widget.index == null ? const Icon(Icons.close) : const Icon(Icons.edit),
         ),
       ),
     );
