@@ -50,10 +50,7 @@ class Products with ChangeNotifier {
 
   Future editMyProduct({Product product}) async {
     try {
-      await Firestore.instance
-          .collection('Products')
-          .document(product.uid)
-          .updateData({
+      await _firestore.document(product.uid).updateData({
         'description': product.description,
         'imageUrl': product.imageUrl,
         'name': product.name,
@@ -68,6 +65,33 @@ class Products with ChangeNotifier {
                   imageUrl: product.imageUrl ?? value.imageUrl,
                   name: product.name ?? value.name,
                   price: product.price ?? value.price,
+                ));
+        notifyListeners();
+      });
+    } catch (err) {
+      print(err);
+    }
+  }
+
+  Future addNewMyProduct({Product product, String userUid}) async {
+    try {
+      var doc = _firestore.document();
+      await doc.setData({
+        'createUid': userUid,
+        'description': product.description,
+        'imageUrl': product.imageUrl,
+        'name': product.name,
+        'price': product.price,
+      }).whenComplete(() {
+        _myProducts.putIfAbsent(
+            doc.documentID,
+            () => Product(
+                  uid: doc.documentID ?? null,
+                  createUid: userUid ?? null,
+                  description: product.description ?? null,
+                  imageUrl: product.imageUrl ?? '',
+                  name: product.name ?? null,
+                  price: product.price ?? 0.0,
                 ));
         notifyListeners();
       });

@@ -15,24 +15,32 @@ class ManageProducts extends StatefulWidget {
 class _ManageProductsState extends State<ManageProducts> {
   bool _loading = true;
   bool _isData = false;
+  bool _addNew = false;
 
   @override
   void didChangeDependencies() {
     if (!_isData) {
       String userUid = Provider.of<User>(context, listen: false).uid;
-      Provider.of<Products>(context, listen: false).fetchMyProducts(userUid: userUid).whenComplete(() {
-      setState(() {
-        _loading = false;
+      Provider.of<Products>(context, listen: false)
+          .fetchMyProducts(userUid: userUid)
+          .whenComplete(() {
+        setState(() {
+          _loading = false;
+        });
       });
-      
-    });
     } else {
       setState(() {
         _loading = false;
       });
     }
-    
+
     super.didChangeDependencies();
+  }
+
+  void _newProductClose() {
+    setState(() {
+      _addNew = false;
+    });
   }
 
   @override
@@ -44,17 +52,36 @@ class _ManageProductsState extends State<ManageProducts> {
         title: Text('ManageProducts'),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.add), onPressed: () {
-            print('Add new Product');
-          })
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  _addNew = true;
+                });
+                print('Add new Product');
+              })
         ],
       ),
       drawer: DrawerApp(),
-      body: _loading ? CircularProgressIndicator() : ListView.builder(
-        itemCount: myProducts.length,
-        itemBuilder: (context, index) {
-        return MyProduct(index: index);
-      }),
+      body: _loading
+          ? CircularProgressIndicator()
+          : Column(
+              children: <Widget>[
+                !_addNew
+                    ? SizedBox()
+                    : Expanded(
+                        child: SingleChildScrollView(
+                            child: MyProduct(
+                                index: null, close: _newProductClose))),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: myProducts.length,
+                      itemBuilder: (context, index) {
+                        return MyProduct(index: index);
+                      }),
+                ),
+              ],
+            ),
     );
   }
 }
