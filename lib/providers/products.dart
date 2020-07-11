@@ -55,7 +55,9 @@ class Products with ChangeNotifier {
         'imageUrl': product.imageUrl,
         'name': product.name,
         'price': product.price,
-      }).whenComplete(() {
+      }).catchError((err) {
+        throw err;
+      }).then((_) {
         _myProducts.update(
             product.uid,
             (value) => Product(
@@ -70,6 +72,7 @@ class Products with ChangeNotifier {
       });
     } catch (err) {
       print(err);
+      throw err;
     }
   }
 
@@ -97,6 +100,19 @@ class Products with ChangeNotifier {
       });
     } catch (err) {
       print(err);
+    }
+  }
+
+  Future removeMyProduct({String productUid}) async {
+    try {
+      await _firestore.document(productUid).delete().catchError((err) {
+        throw err;
+      }).then((value) {
+        _myProducts.removeWhere((key, value) => key == productUid);
+      });
+    } catch (err) {
+      print(err);
+      throw err;
     }
   }
 

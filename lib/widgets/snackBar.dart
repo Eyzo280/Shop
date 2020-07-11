@@ -25,7 +25,7 @@ Widget snackBarProduct({
             if (buttonActive) {
               // Zabezpieczenie gdyby ktos szybko kliknal kilka razy w przycisk.
               buttonActive = false;
-              Provider.of<Cart>(context, listen: false).undoLastProducts(
+              Provider.of<Cart>(context, listen: false).removeProductFromCart(
                   productUid: productUid, removeQuantity: quantity);
               Scaffold.of(context).hideCurrentSnackBar();
               print('Undo');

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
@@ -79,8 +80,24 @@ class Cart extends StatelessWidget {
                       print('Detail');
                     },
                     leading: Image.network(cartProducts[index].imageUrl),
-                    title: Text(cartProducts[index].name),
-                    trailing: Text('Count: ${cartProducts[index].quantity}'),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Text(cartProducts[index].name),
+                        Text('Count: ${cartProducts[index].quantity}')
+                      ],
+                    ),
+                    trailing: IconButton(
+                        icon: Icon(
+                          MaterialCommunityIcons.cart_minus,
+                          color: Theme.of(context).errorColor,
+                        ),
+                        onPressed: () {
+                          Provider.of<cartdata.Cart>(context, listen: false)
+                              .removeProductFromCart(
+                                  productUid: cartProducts[index].uid,
+                                  removeQuantity: 1);
+                        }),
                   ),
                 ),
                 Divider(),

@@ -29,6 +29,34 @@ class _MyProductState extends State<MyProduct> {
     price: 0.0,
   );
 
+  void showSnackBar(String type, Color color) {
+    setState(() {
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: SizedBox(
+              height: 25,
+              child: Center(
+                  child: Text(
+                type,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ))),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
+            ),
+          ),
+          backgroundColor: color,
+        ),
+      );
+      _loading = false;
+      if (type != 'Error') {
+        _edit = false;
+      }
+    });
+  }
+
   void saveProduct(userUid) async {
     if (!_key.currentState.validate()) {
       return;
@@ -41,48 +69,22 @@ class _MyProductState extends State<MyProduct> {
     });
 
     try {
-      void showSnackBar(String type) {
-        setState(() {
-          Scaffold.of(context).hideCurrentSnackBar();
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: SizedBox(
-                  height: 25,
-                  child: Center(
-                      child: Text(
-                    type,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ))),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
-                ),
-              ),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _loading = false;
-          _edit = false;
-        });
-      }
-
       if (_editProduct.uid == null) {
         await Provider.of<Products>(context, listen: false)
             .addNewMyProduct(product: _editProduct, userUid: userUid)
-            .whenComplete(() {
+            .then((_) {
           widget.close();
-          showSnackBar('Added new product.');
+          showSnackBar('Added new product.', Colors.green);
         });
       } else {
         await Provider.of<Products>(context, listen: false)
             .editMyProduct(product: _editProduct)
-            .whenComplete(() {
-          showSnackBar('Saved');
+            .then((_) {
+          showSnackBar('Saved', Colors.green);
         });
       }
     } catch (err) {
-      print(err);
+      showSnackBar('Error', Colors.red);
     }
   }
 
@@ -360,10 +362,14 @@ class _MyProductState extends State<MyProduct> {
     var userUid = Provider.of<User>(context).uid;
     return Card(
       child: ListTile(
-        leading:  _editProduct.imageUrl != ''
-            ?  Image.network(_editProduct.imageUrl)
-            : product.imageUrl != '' ? SizedBox(
-                height: 50, width: 50, child: Image.network(product.imageUrl)) : Image.asset('images/empty_url.png'),
+        leading: _editProduct.imageUrl != ''
+            ? Image.network(_editProduct.imageUrl)
+            : product.imageUrl != ''
+                ? SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: Image.network(product.imageUrl))
+                : Image.asset('images/empty_url.png'),
         title: _edit
             ? Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -395,7 +401,9 @@ class _MyProductState extends State<MyProduct> {
                   });
                   print('Edit');
                 },
-          icon: widget.index == null ? const Icon(Icons.close) : const Icon(Icons.edit),
+          icon: widget.index == null
+              ? const Icon(Icons.close)
+              : const Icon(Icons.edit),
         ),
       ),
     );

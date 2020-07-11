@@ -15,7 +15,7 @@ class Orders with ChangeNotifier {
       if (isEmpty) {
         await _firestore
             .document(userUid)
-            .collection('Orders')
+            .collection('Orders').orderBy('DateOfPurchase',descending: true)
             .getDocuments()
             .then(
           (value) {
@@ -59,6 +59,7 @@ class Orders with ChangeNotifier {
               imageUrl: doc.data['imageUrl'] ?? null,
               name: doc.data['name'] ?? null,
               quantity: doc.data['quantity'] ?? null,
+              price: doc.data['price'] ?? null,
             ));
           }
           _productsFromOrder.putIfAbsent(orderUid, () => listProducts);

@@ -4,6 +4,8 @@ import 'package:shopapp/models/order.dart' as modelOrder;
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
 import 'package:shopapp/providers/orders.dart';
+import 'package:shopapp/widgets/order_detail.dart';
+import 'package:shopapp/widgets/product_detail.dart';
 
 class Order extends StatefulWidget {
   final orderUid;
@@ -77,10 +79,40 @@ class _OrderState extends State<Order> {
           !open
               ? SizedBox()
               : Container(
-                  height: 50,
+                  height: products.length <= 3
+                      ? double.parse(products.length.toString()) * 75
+                      : 200,
                   child: ListView.builder(
                     itemCount: products.length,
-                    itemBuilder: (context, index) => Text(products[index].name),
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return OrderDetail(
+                                  productFromOrder: products[index],
+                                  orderDateOfPurchase: order.dateOfPurchase,
+                                  index: index,
+                                );
+                              },
+                            ),
+                          );
+                          print('Detail Order');
+                        },
+                        leading: Image.network(products[index].imageUrl),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(products[index].name),
+                            Text('${products[index].price} \$')
+                          ],
+                        ),
+                        trailing: Text('x ${products[index].quantity}'),
+                      ),
+                    ),
                   ),
                 )
         ],

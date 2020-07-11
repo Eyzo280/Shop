@@ -23,11 +23,13 @@ class ProductFromOrder {
   String imageUrl;
   String name;
   int quantity;
+  double price;
 
   ProductFromOrder({
     this.description,
     this.imageUrl,
     this.name,
     this.quantity,
+    this.price
   });
 }

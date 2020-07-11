@@ -10,11 +10,26 @@ class ProductDetail extends StatelessWidget {
     @required this.product,
   });
 
+  Widget flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.name),
+        title: Hero(
+          tag: 'name' + product.uid,
+          child: Text(product.name)),
         centerTitle: true,
       ),
       body: Container(
@@ -22,7 +37,10 @@ class ProductDetail extends StatelessWidget {
           children: <Widget>[
             Flexible(
               fit: FlexFit.tight,
-              child: Image.network(product.imageUrl),
+              child: Hero(
+                tag: product.imageUrl,
+                child: Image.network(product.imageUrl),
+              ),
             ),
             Flexible(
               fit: FlexFit.tight,
@@ -35,30 +53,45 @@ class ProductDetail extends StatelessWidget {
                     children: <Widget>[
                       Flexible(
                         fit: FlexFit.tight,
-                        child: Builder(builder: (BuildContext ctx) { // Builder byl potrzebny, aby mozna tu bylo uzywac SnackBar
+                        child: Builder(builder: (BuildContext ctx) {
+                          // Builder byl potrzebny, aby mozna tu bylo uzywac SnackBar
                           return FlatButton(
                             onPressed: () {
                               Provider.of<Cart>(context, listen: false)
-                                  .addItemToCart(ctx: ctx,productUid: product.uid, name: product.name, imageUrl: product.imageUrl, decription: product.description, price: product.price);
-                              
+                                  .addItemToCart(
+                                      ctx: ctx,
+                                      productUid: product.uid,
+                                      name: product.name,
+                                      imageUrl: product.imageUrl,
+                                      decription: product.description,
+                                      price: product.price);
+
                               print('Add to cart');
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                Text(
-                                  '${product.price.toString()} \$',
-                                  style: TextStyle(
-                                      color: Theme.of(context).buttonColor),
+                                Hero(
+                                  tag: product.price,
+                                  flightShuttleBuilder: flightShuttleBuilder,
+                                  child: Text(
+                                    '${product.price.toString()} \$',
+                                    style: TextStyle(
+                                        color: Theme.of(context).buttonColor),
+                                  ),
                                 ),
                                 Text(
                                   'Add To Cart',
                                   style: TextStyle(
                                       color: Theme.of(context).buttonColor),
                                 ),
-                                Icon(
-                                  Icons.add_shopping_cart,
-                                  color: Theme.of(context).buttonColor,
+                                Hero(
+                                  tag: 'icon-' + product.uid,
+                                
+                                                                  child: Icon(
+                                    Icons.add_shopping_cart,
+                                    color: Theme.of(context).buttonColor,
+                                  ),
                                 )
                               ],
                             ),

@@ -13,6 +13,19 @@ class ProductWidget extends StatelessWidget {
     @required this.deviceSize,
   });
 
+  Widget flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -29,7 +42,10 @@ class ProductWidget extends StatelessWidget {
           },
           child: Container(
             color: Colors.white,
-            child: Image.network(product.imageUrl),
+            child: Hero(
+              tag: product.imageUrl,
+              child: Image.network(product.imageUrl),
+            ),
           ),
         ),
         footer: Container(
@@ -43,12 +59,20 @@ class ProductWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      product.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    Hero(
+                      tag: 'name' + product.uid,
+                      flightShuttleBuilder: flightShuttleBuilder,
+                                          child: Text(
+                        product.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    Text(
-                      '${product.price} \$',
+                    Hero(
+                      tag: product.price,
+                      flightShuttleBuilder: flightShuttleBuilder,
+                      child: Text(
+                        '${product.price} \$',
+                      ),
                     ),
                   ],
                 ),
@@ -66,7 +90,9 @@ class ProductWidget extends StatelessWidget {
                         price: product.price);
                     print('Add new product');
                   },
-                  child: const Icon(Icons.shopping_cart),
+                  child: Hero(
+                    tag: 'icon-' + product.uid,
+                    child: const Icon(Icons.add_shopping_cart),),
                 ),
               ),
             ],

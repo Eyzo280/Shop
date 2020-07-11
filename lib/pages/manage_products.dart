@@ -75,10 +75,89 @@ class _ManageProductsState extends State<ManageProducts> {
                                 index: null, close: _newProductClose))),
                 Expanded(
                   child: ListView.builder(
-                      itemCount: myProducts.length,
-                      itemBuilder: (context, index) {
-                        return MyProduct(index: index);
-                      }),
+                    itemCount: myProducts.length,
+                    itemBuilder: (context, index) {
+                      return Dismissible(
+                          key: ValueKey(myProducts[index].uid),
+                          background: Container(
+                            color: Theme.of(context).errorColor,
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 20),
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 4,
+                            ),
+                          ),
+                          confirmDismiss: (_) {
+                            return showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('Are you sure?'),
+                                    content: Text(
+                                      'Do you want to remove the item from the cart?',
+                                    ),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text('No'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(false);
+                                        },
+                                      ),
+                                      FlatButton(
+                                        child: Text('Yes'),
+                                        onPressed: () {
+                                          Provider.of<Products>(context,
+                                                  listen: false)
+                                              .removeMyProduct(
+                                                  productUid:
+                                                      myProducts[index].uid)
+                                              .catchError((err) {
+                                           
+                                            setState(() {
+                                               Navigator.of(context).pop(false);
+                                              Scaffold.of(context)
+                                                  .hideCurrentSnackBar();
+                                              Scaffold.of(context).showSnackBar( // nie dziala
+                                                SnackBar(
+                                                  content: SizedBox(
+                                                      height: 25,
+                                                      child: Center(
+                                                          child: Text(
+                                                        'Problem from deleted this product.',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ))),
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(20),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            });
+                                          }).then((value) => Navigator.of(context).pop(true));
+                                          
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                          child: MyProduct(index: index));
+                    },
+                  ),
                 ),
               ],
             ),

@@ -58,7 +58,7 @@ class Cart with ChangeNotifier {
     print(_cart);
   }
 
-  void undoLastProducts({String productUid, int removeQuantity}) {
+  void removeProductFromCart({String productUid, int removeQuantity}) {
     if (_cart.containsKey(productUid)) {
       for (var i in _cart.keys) {
         if (i == productUid) {
@@ -121,10 +121,11 @@ class Cart with ChangeNotifier {
           );
           for (var _productUid in _cart.keys) {
             doc.collection('Products').document(_productUid).setData({
-              'name': _cart[_productUid].name,
-              'decription': _cart[_productUid].decription,
-              'imageUrl': _cart[_productUid].imageUrl,
-              'quantity': _cart[_productUid].quantity,
+              'name': _cart[_productUid].name ?? null,
+              'price': _cart[_productUid].price ?? null,
+              'decription': _cart[_productUid].decription ?? null,
+              'imageUrl': _cart[_productUid].imageUrl ?? null,
+              'quantity': _cart[_productUid].quantity ?? null,
             });
           }
         }).then((v) {
