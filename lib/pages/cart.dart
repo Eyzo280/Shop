@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
 import 'package:shopapp/widgets/cart_page/buttonPay.dart';
+import 'package:shopapp/widgets/cart_page/listProducts.dart';
 import 'package:shopapp/widgets/product_detail.dart';
 import '../providers/cart.dart' as cartdata;
 import 'package:shopapp/models/cart.dart';
@@ -51,62 +52,6 @@ class Cart extends StatelessWidget {
     );
   }
 
-  Widget listProducts({BuildContext context, List<CartItem> cartProducts}) {
-    return Flexible(
-      flex: 5,
-      fit: FlexFit.tight,
-      child: ListView.builder(
-          itemCount: cartProducts.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    onTap: () {
-                      // Mozna przerobic na Routes
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return ProductDetail(
-                          product: Product(
-                              createUid: '',
-                              description: cartProducts[index].decription,
-                              name: cartProducts[index].name,
-                              price: cartProducts[index].price,
-                              imageUrl: cartProducts[index].imageUrl,
-                              uid: cartProducts[index].uid),
-                        );
-                      }));
-                      print('Detail');
-                    },
-                    leading: Image.network(cartProducts[index].imageUrl),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Text(cartProducts[index].name),
-                        Text('Count: ${cartProducts[index].quantity}')
-                      ],
-                    ),
-                    trailing: IconButton(
-                        icon: Icon(
-                          MaterialCommunityIcons.cart_minus,
-                          color: Theme.of(context).errorColor,
-                        ),
-                        onPressed: () {
-                          Provider.of<cartdata.Cart>(context, listen: false)
-                              .removeProductFromCart(
-                                  productUid: cartProducts[index].uid,
-                                  removeQuantity: 1);
-                        }),
-                  ),
-                ),
-                Divider(),
-              ],
-            );
-          }),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var userUid = Provider.of<User>(context).uid;
@@ -126,8 +71,7 @@ class Cart extends StatelessWidget {
             cartProducts: cartProducts,
           ),
           Divider(),
-          listProducts(
-            context: context,
+          CartListProducts(
             cartProducts: cartProducts,
           ),
         ],

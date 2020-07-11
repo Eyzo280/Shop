@@ -370,24 +370,31 @@ class _MyProductState extends State<MyProduct> {
                     width: 50,
                     child: Image.network(product.imageUrl))
                 : Image.asset('images/empty_url.png'),
-        title: _edit
-            ? Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Form(
-                  key: _key,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      name(product),
-                      imageUrl(product),
-                      price(product),
-                      description(product),
-                      saveButton(product, userUid),
-                    ],
+        title: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+          height: _edit ? 470 : 20,
+          child: _edit
+              ? SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                      key: _key,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          name(product),
+                          imageUrl(product),
+                          price(product),
+                          description(product),
+                          saveButton(product, userUid),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              )
-            : Text(product.name),
+                )
+              : Text(product.name),
+        ),
         subtitle: _edit ? const SizedBox() : Text('Price: ${product.price}'),
         trailing: IconButton(
           onPressed: widget.index == null

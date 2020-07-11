@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/customRoutes/right.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
 import 'package:shopapp/pages/login.dart';
@@ -40,12 +41,45 @@ class MyApp extends StatelessWidget {
         ),
         home: auth != null ? Shop() : LoginPage(),
         initialRoute: '/',
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case '/loginPage':
+              return SlideRightRoute(
+                page: LoginPage(),
+                settings: settings,
+              );
+            case '/Orders':
+              return SlideRightRoute(
+                page: OrdersPage(),
+                settings: settings,
+              );
+            case '/Cart':
+              return new SlideRightRoute(
+                page: page.Cart(),
+                settings: settings,
+              );
+            case '/ManageProducts':
+              return new SlideRightRoute(
+                page: ManageProducts(),
+                settings: settings,
+              );
+
+            default:
+              return new SlideRightRoute(
+                page: Shop(),
+                settings: settings,
+              );
+          }
+        },
+
+        /*
         routes: {
           // LoginPage.routeName: (context) => LoginPage(),
           OrdersPage.routeName: (_) => OrdersPage(),
           page.Cart.routeName: (_) => page.Cart(),
           ManageProducts.routeName: (_) => ManageProducts(),
         },
+        */
       );
     }
 
