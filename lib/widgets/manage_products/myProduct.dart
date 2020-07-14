@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
@@ -19,6 +21,9 @@ class _MyProductState extends State<MyProduct> {
   bool _loading = false;
 
   GlobalKey<FormState> _key = GlobalKey<FormState>();
+
+  final picker = ImagePicker();
+  List<Map<String, dynamic>> addedImages = [];
 
   Product _editProduct = Product(
     uid: null,
@@ -136,64 +141,85 @@ class _MyProductState extends State<MyProduct> {
     );
   }
 
-  Widget imageUrl(Product product) {
+  Widget images() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Text('Images:'),
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 5),
-          child: const Text('Image Url:'),
+          height: addedImages.length >= 3 ? 150 : 75,
+          width: double.infinity,
+          child: GridView.count(
+            crossAxisCount: 3,
+            children: List.generate(
+              addedImages.isEmpty
+                  ? 1
+                  : addedImages.length == 6
+                      ? 6
+                      : addedImages.length +
+                          1, // dodaje 1 do ilosci dodanych zdjęć, aby ikona dodawania była zawsze na końcu, oraz jeżeli jest 6 zdjęć to nie dodaje już 1.
+              (index) {
+                if (addedImages.isEmpty || addedImages.length == index) {
+                  return IconButton(
+                    icon: Icon(Icons.add_a_photo),
+                    onPressed: () async {
+                      final pickedFile =
+                          await picker.getImage(source: ImageSource.gallery);
+                      setState(() {
+                        addedImages.add({'path': pickedFile.path});
+                        print(addedImages);
+                      });
+                    },
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: <Widget>[
+                        addedImages[index]['path']
+                                .toString()
+                                .contains('https://')
+                            ? Image.network(addedImages[index]['path'])
+                            : Image.asset(addedImages[index]['path']),
+                        Positioned(
+                          left: 20,
+                          bottom: 20,
+                          child: IconButton(
+                            splashColor: Color.fromRGBO(0, 0, 0, 0),
+                            highlightColor: Color.fromRGBO(0, 0, 0,
+                                0), // wylaczona animacja prz naciskaniu przycisku
+                            icon: Icon(
+                              MaterialIcons.delete,
+                              size: 20,
+                              color: Theme.of(context).errorColor,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                addedImages.removeWhere((element) =>
+                                    element['path'] ==
+                                    addedImages[index]['path']);
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
         ),
-        TextFormField(
-          validator: (val) {
-            if (val.isEmpty && widget.index != null) {
-              return null;
-            }
-            if (!RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+')
-                .hasMatch(val)) {
-              return 'Invalid url.';
-            }
-            if (widget.index == null && val.isEmpty) {
-              return 'Enter image url.';
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-              border: OutlineInputBorder(), hintText: product.imageUrl),
-          onFieldSubmitted: (val) {
-            setState(() {
-              _editProduct = Product(
-                uid: product.uid,
-                createUid: product.createUid,
-                description: product.description,
-                imageUrl: val,
-                name: _editProduct.name,
-                price: _editProduct.price,
-              );
-            });
-          },
-          onSaved: (val) {
-            if (val.isEmpty) {
-              _editProduct = Product(
-                uid: product.uid,
-                createUid: product.createUid,
-                description: product.description,
-                imageUrl: product.imageUrl,
-                name: _editProduct.name,
-                price: _editProduct.price,
-              );
-            } else {
-              _editProduct = Product(
-                uid: product.uid,
-                createUid: product.createUid,
-                description: _editProduct.description,
-                imageUrl: val,
-                name: _editProduct.name,
-                price: _editProduct.price,
-              );
-            }
-          },
-        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              '${addedImages.length} / 6',
+              style: TextStyle(fontSize: 12.5, color: Colors.grey),
+            ),
+          ),
+        )
       ],
     );
   }
@@ -348,6 +374,11 @@ class _MyProductState extends State<MyProduct> {
     }
 
     var myProducts = Provider.of<Products>(context).myProducts;
+
+    if (addedImages.isEmpty && widget.index != null) {
+      addedImages.add({'path': myProducts[widget.index].imageUrl});
+    }
+
     Product product = widget.index != null
         ? myProducts[widget.index]
         : Product(
@@ -369,11 +400,13 @@ class _MyProductState extends State<MyProduct> {
                     height: 50,
                     width: 50,
                     child: Image.network(product.imageUrl))
-                : Image.asset('images/empty_url.png'),
+                : addedImages.isNotEmpty
+                    ? Image.asset(addedImages[0]['path'])
+                    : Image.asset('images/empty_url.png'),
         title: AnimatedContainer(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn,
-          height: _edit ? 470 : 20,
+          height: !_edit ? 20 : addedImages.length >= 3 ? 560 : 485,
           child: _edit
               ? SingleChildScrollView(
                   child: Padding(
@@ -384,7 +417,7 @@ class _MyProductState extends State<MyProduct> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           name(product),
-                          imageUrl(product),
+                          images(),
                           price(product),
                           description(product),
                           saveButton(product, userUid),
@@ -404,6 +437,10 @@ class _MyProductState extends State<MyProduct> {
                 }
               : () {
                   setState(() {
+                    if (_edit) {
+                      addedImages.clear();
+                    }
+
                     _edit = !_edit;
                   });
                   print('Edit');

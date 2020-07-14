@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/customRoutes/left.dart';
 import 'package:shopapp/customRoutes/right.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
                 settings: settings,
               );
             case '/Cart':
-              return new SlideRightRoute(
+              return new SlideLeftRoute(
                 page: page.Cart(),
                 settings: settings,
               );
