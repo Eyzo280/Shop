@@ -38,8 +38,8 @@ class ProductDetail extends StatelessWidget {
             Flexible(
               fit: FlexFit.tight,
               child: Hero(
-                tag: product.imageUrl,
-                child: Image.network(product.imageUrl),
+                tag: product.imageUrls[0],
+                child: Image.network(product.imageUrls[0]),
               ),
             ),
             Flexible(
@@ -62,7 +62,7 @@ class ProductDetail extends StatelessWidget {
                                       ctx: ctx,
                                       productUid: product.uid,
                                       name: product.name,
-                                      imageUrl: product.imageUrl,
+                                      imageUrls: product.imageUrls,
                                       decription: product.description,
                                       price: product.price);
 

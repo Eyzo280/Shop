@@ -41,8 +41,8 @@ class OrderDetail extends StatelessWidget {
             Flexible(
               fit: FlexFit.tight,
               child: Hero(
-                tag: productFromOrder.imageUrl + index.toString(),
-                child: Image.network(productFromOrder.imageUrl),
+                tag: productFromOrder.imageUrls[0] + index.toString(),
+                child: Image.network(productFromOrder.imageUrls[0]),
               ),
             ),
             Flexible(

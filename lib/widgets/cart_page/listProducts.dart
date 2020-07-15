@@ -64,14 +64,14 @@ class _CartListProductsState extends State<CartListProducts>
                                     widget.cartProducts[index].decription,
                                 name: widget.cartProducts[index].name,
                                 price: widget.cartProducts[index].price,
-                                imageUrl: widget.cartProducts[index].imageUrl,
+                                imageUrls: widget.cartProducts[index].imageUrls,
                                 uid: widget.cartProducts[index].uid),
                           );
                         }));
                         print('Detail');
                       },
                       leading:
-                          Image.network(widget.cartProducts[index].imageUrl),
+                          Image.network(widget.cartProducts[index].imageUrls[0]),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[

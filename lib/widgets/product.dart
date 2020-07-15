@@ -43,8 +43,8 @@ class ProductWidget extends StatelessWidget {
           child: Container(
             color: Colors.white,
             child: Hero(
-              tag: product.imageUrl,
-              child: Image.network(product.imageUrl),
+              tag: product.imageUrls[0],
+              child: Image.network(product.imageUrls[0]),
             ),
           ),
         ),
@@ -85,7 +85,7 @@ class ProductWidget extends StatelessWidget {
                         ctx: context,
                         productUid: product.uid,
                         name: product.name,
-                        imageUrl: product.imageUrl,
+                        imageUrls: product.imageUrls,
                         decription: product.description,
                         price: product.price);
                     print('Add new product');

@@ -23,13 +23,14 @@ class _MyProductState extends State<MyProduct> {
   GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   final picker = ImagePicker();
-  List<Map<String, dynamic>> addedImages = [];
+  List<String> addedImages = [];
+  bool _isData = false;
 
   Product _editProduct = Product(
     uid: null,
     createUid: null,
     description: null,
-    imageUrl: '',
+    imageUrls: [],
     name: null,
     price: 0.0,
   );
@@ -121,7 +122,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrl: _editProduct.imageUrl,
+                imageUrls: _editProduct.imageUrls,
                 name: product.name,
                 price: _editProduct.price,
               );
@@ -130,7 +131,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrl: _editProduct.imageUrl,
+                imageUrls: _editProduct.imageUrls,
                 name: val,
                 price: _editProduct.price,
               );
@@ -166,7 +167,7 @@ class _MyProductState extends State<MyProduct> {
                       final pickedFile =
                           await picker.getImage(source: ImageSource.gallery);
                       setState(() {
-                        addedImages.add({'path': pickedFile.path});
+                        addedImages.add(pickedFile.path);
                         print(addedImages);
                       });
                     },
@@ -176,11 +177,9 @@ class _MyProductState extends State<MyProduct> {
                     padding: const EdgeInsets.all(8.0),
                     child: Stack(
                       children: <Widget>[
-                        addedImages[index]['path']
-                                .toString()
-                                .contains('https://')
-                            ? Image.network(addedImages[index]['path'])
-                            : Image.asset(addedImages[index]['path']),
+                        addedImages[index].toString().contains('https://')
+                            ? Image.network(addedImages[index])
+                            : Image.asset(addedImages[index]),
                         Positioned(
                           left: 20,
                           bottom: 20,
@@ -195,9 +194,8 @@ class _MyProductState extends State<MyProduct> {
                             ),
                             onPressed: () {
                               setState(() {
-                                addedImages.removeWhere((element) =>
-                                    element['path'] ==
-                                    addedImages[index]['path']);
+                                addedImages.removeWhere(
+                                    (element) => element == addedImages[index]);
                               });
                             },
                           ),
@@ -256,7 +254,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrl: _editProduct.imageUrl,
+                imageUrls: _editProduct.imageUrls,
                 name: _editProduct.name,
                 price: product.price,
               );
@@ -265,7 +263,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrl: _editProduct.imageUrl,
+                imageUrls: _editProduct.imageUrls,
                 name: _editProduct.name,
                 price: double.parse(val),
               );
@@ -307,7 +305,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: product.description,
-                imageUrl: _editProduct.imageUrl,
+                imageUrls: _editProduct.imageUrls,
                 name: _editProduct.name,
                 price: _editProduct.price,
               );
@@ -316,7 +314,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: val,
-                imageUrl: _editProduct.imageUrl,
+                imageUrls: _editProduct.imageUrls,
                 name: _editProduct.name,
                 price: _editProduct.price,
               );
@@ -368,6 +366,12 @@ class _MyProductState extends State<MyProduct> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    addedImages.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.index == null) {
       _edit = true;
@@ -375,8 +379,10 @@ class _MyProductState extends State<MyProduct> {
 
     var myProducts = Provider.of<Products>(context).myProducts;
 
-    if (addedImages.isEmpty && widget.index != null) {
-      addedImages.add({'path': myProducts[widget.index].imageUrl});
+    // Adds url image from database when start this page
+    if (!_isData && (addedImages.isEmpty && widget.index != null)) {
+      _isData = true;
+      addedImages.addAll(myProducts[widget.index].imageUrls);
     }
 
     Product product = widget.index != null
@@ -385,7 +391,7 @@ class _MyProductState extends State<MyProduct> {
             uid: null,
             createUid: null,
             description: '',
-            imageUrl: '',
+            imageUrls: [],
             name: '',
             price: 0.0,
           );
@@ -393,16 +399,11 @@ class _MyProductState extends State<MyProduct> {
     var userUid = Provider.of<User>(context).uid;
     return Card(
       child: ListTile(
-        leading: _editProduct.imageUrl != ''
-            ? Image.network(_editProduct.imageUrl)
-            : product.imageUrl != ''
-                ? SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: Image.network(product.imageUrl))
-                : addedImages.isNotEmpty
-                    ? Image.asset(addedImages[0]['path'])
-                    : Image.asset('images/empty_url.png'),
+        leading: addedImages.isEmpty
+            ? Image.asset('images/empty_url.png')
+            : addedImages[0].toString().contains('https://')
+                ? Image.network(addedImages[0])
+                : Image.asset(addedImages[0]),
         title: AnimatedContainer(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn,
@@ -439,6 +440,8 @@ class _MyProductState extends State<MyProduct> {
                   setState(() {
                     if (_edit) {
                       addedImages.clear();
+
+                      _isData = false;
                     }
 
                     _edit = !_edit;

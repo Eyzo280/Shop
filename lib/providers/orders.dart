@@ -15,7 +15,8 @@ class Orders with ChangeNotifier {
       if (isEmpty) {
         await _firestore
             .document(userUid)
-            .collection('Orders').orderBy('DateOfPurchase',descending: true)
+            .collection('Orders')
+            .orderBy('DateOfPurchase', descending: true)
             .getDocuments()
             .then(
           (value) {
@@ -56,7 +57,7 @@ class Orders with ChangeNotifier {
           for (var doc in value.documents) {
             listProducts.add(ProductFromOrder(
               description: doc.data['description'] ?? null,
-              imageUrl: doc.data['imageUrl'] ?? null,
+              imageUrls: List<String>.from(doc.data['imageUrls']) ?? null,
               name: doc.data['name'] ?? null,
               quantity: doc.data['quantity'] ?? null,
               price: doc.data['price'] ?? null,

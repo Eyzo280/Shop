@@ -13,7 +13,7 @@ class Products with ChangeNotifier {
         uid: doc.documentID,
         createUid: doc['createUid'] ?? null,
         description: doc['description'] ?? null,
-        imageUrl: doc['imageUrl'] ?? null,
+        imageUrls: List<String>.from(doc.data['imageUrls']) ?? null,
         name: doc['name'] ?? null,
         price: doc['price'] ?? null,
       );
@@ -34,7 +34,7 @@ class Products with ChangeNotifier {
                       uid: doc.documentID ?? null,
                       createUid: doc.data['createUid'] ?? null,
                       description: doc.data['description'] ?? null,
-                      imageUrl: doc.data['imageUrl'] ?? null,
+                      imageUrls: List<String>.from(doc.data['imageUrls'])  ?? null,
                       name: doc.data['name'] ?? null,
                       price: doc.data['price'] ?? null,
                     ));
@@ -52,7 +52,7 @@ class Products with ChangeNotifier {
     try {
       await _firestore.document(product.uid).updateData({
         'description': product.description,
-        'imageUrl': product.imageUrl,
+        'imageUrls': product.imageUrls,
         'name': product.name,
         'price': product.price,
       }).catchError((err) {
@@ -64,7 +64,7 @@ class Products with ChangeNotifier {
                   uid: product.uid ?? value.uid,
                   createUid: product.createUid ?? value.createUid,
                   description: product.description ?? value.description,
-                  imageUrl: product.imageUrl ?? value.imageUrl,
+                  imageUrls: product.imageUrls ?? value.imageUrls,
                   name: product.name ?? value.name,
                   price: product.price ?? value.price,
                 ));
@@ -82,7 +82,7 @@ class Products with ChangeNotifier {
       await doc.setData({
         'createUid': userUid,
         'description': product.description,
-        'imageUrl': product.imageUrl,
+        'imageUrls': product.imageUrls,
         'name': product.name,
         'price': product.price,
       }).whenComplete(() {
@@ -92,7 +92,7 @@ class Products with ChangeNotifier {
                   uid: doc.documentID ?? null,
                   createUid: userUid ?? null,
                   description: product.description ?? null,
-                  imageUrl: product.imageUrl ?? '',
+                  imageUrls: product.imageUrls ?? '',
                   name: product.name ?? null,
                   price: product.price ?? 0.0,
                 ));

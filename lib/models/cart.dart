@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 class CartItem {
   final String uid;
   final String name;
-  final String imageUrl;
+  final List<String> imageUrls;
   final String decription;
   final double price;
   final int quantity;
@@ -11,7 +11,7 @@ class CartItem {
   CartItem({
     @required this.uid,
     @required this.name,
-    @required this.imageUrl,
+    @required this.imageUrls,
     @required this.decription,
     @required this.price,
     @required this.quantity,

@@ -15,7 +15,7 @@ class Cart with ChangeNotifier {
     String productUid,
     String name,
     String decription,
-    String imageUrl,
+    List<String> imageUrls,
     double price,
   }) {
     if (_cart.containsKey(productUid)) {
@@ -24,7 +24,7 @@ class Cart with ChangeNotifier {
         (existingItem) => CartItem(
           uid: existingItem.uid,
           name: existingItem.name,
-          imageUrl: existingItem.imageUrl,
+          imageUrls: existingItem.imageUrls,
           decription: existingItem.decription,
           price: existingItem.price,
           quantity: existingItem.quantity + 1,
@@ -35,7 +35,7 @@ class Cart with ChangeNotifier {
         productUid,
         () => CartItem(
             uid: productUid,
-            imageUrl: imageUrl,
+            imageUrls: imageUrls,
             decription: decription,
             name: name,
             price: price,
@@ -68,7 +68,7 @@ class Cart with ChangeNotifier {
               (existingItem) => CartItem(
                 uid: productUid,
                 name: existingItem.name,
-                imageUrl: existingItem.imageUrl,
+                imageUrls: existingItem.imageUrls,
                 decription: existingItem.decription,
                 price: existingItem.price,
                 quantity: existingItem.quantity - 1,
@@ -124,7 +124,7 @@ class Cart with ChangeNotifier {
               'name': _cart[_productUid].name ?? null,
               'price': _cart[_productUid].price ?? null,
               'decription': _cart[_productUid].decription ?? null,
-              'imageUrl': _cart[_productUid].imageUrl ?? null,
+              'imageUrls': _cart[_productUid].imageUrls ?? null,
               'quantity': _cart[_productUid].quantity ?? null,
             });
           }
