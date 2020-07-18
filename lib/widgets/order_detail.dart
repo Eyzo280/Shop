@@ -43,7 +43,7 @@ class OrderDetail extends StatelessWidget {
               fit: FlexFit.tight,
               child: SliderImages(
                 imagesToSliders: productFromOrder.imageUrls,
-                productUrl: productFromOrder.imageUrls[0],
+                productUrl: productFromOrder.imageUrls[0]+index.toString()
               ),
             ),
             Flexible(
