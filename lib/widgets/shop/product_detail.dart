@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/providers/cart.dart';
+import 'package:shopapp/widgets/slider_images.dart';
 
 class ProductDetail extends StatelessWidget {
   final Product product;
@@ -35,15 +36,9 @@ class ProductDetail extends StatelessWidget {
           children: <Widget>[
             Flexible(
               fit: FlexFit.tight,
-              child: Hero(
-                tag: product.imageUrls.isEmpty
-                    ? '${product.uid}-Image'
-                    : product.imageUrls[0],
-                child: product.imageUrls.isEmpty
-                    ? Image.asset('images/empty_url.png')
-                    : product.imageUrls[0].toString().contains('https://')
-                        ? Image.network(product.imageUrls[0])
-                        : Image.asset(product.imageUrls[0]),
+              child: SliderImages(
+                imagesToSliders: product.imageUrls,
+                productUrl: product.imageUrls[0],
               ),
             ),
             Flexible(

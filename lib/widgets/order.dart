@@ -5,7 +5,7 @@ import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
 import 'package:shopapp/providers/orders.dart';
 import 'package:shopapp/widgets/order_detail.dart';
-import 'package:shopapp/widgets/product_detail.dart';
+import 'package:shopapp/widgets/shop/product_detail.dart';
 
 class Order extends StatefulWidget {
   final orderUid;
@@ -109,7 +109,9 @@ class _OrderState extends State<Order> {
                             );
                             print('Detail Order');
                           },
-                          leading: Image.network(products[index].imageUrls[0]),
+                          leading: Hero(
+                            tag: '${products[index].imageUrls[0]}-Image',
+                            child: Image.network(products[index].imageUrls[0])),
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[

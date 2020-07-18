@@ -5,7 +5,7 @@ import 'package:shopapp/models/product.dart';
 import 'package:shopapp/models/user.dart';
 import 'package:shopapp/widgets/cart_page/buttonPay.dart';
 import 'package:shopapp/widgets/cart_page/listProducts.dart';
-import 'package:shopapp/widgets/product_detail.dart';
+import 'package:shopapp/widgets/shop/product_detail.dart';
 import '../providers/cart.dart' as cartdata;
 import 'package:shopapp/models/cart.dart';
 

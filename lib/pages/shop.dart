@@ -5,7 +5,7 @@ import 'package:shopapp/models/user.dart';
 import 'package:shopapp/providers/auth.dart';
 import 'package:shopapp/providers/cart.dart';
 import 'package:shopapp/widgets/drawer.dart';
-import '../widgets/product.dart';
+import '../widgets/shop/product.dart';
 import '../pages/cart.dart' as page;
 
 class Shop extends StatelessWidget {

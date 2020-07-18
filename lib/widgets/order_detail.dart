@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shopapp/models/product.dart';
+import 'package:shopapp/widgets/slider_images.dart';
 
 class OrderDetail extends StatelessWidget {
   final ProductFromOrder productFromOrder;
@@ -40,9 +41,9 @@ class OrderDetail extends StatelessWidget {
           children: <Widget>[
             Flexible(
               fit: FlexFit.tight,
-              child: Hero(
-                tag: productFromOrder.imageUrls[0] + index.toString(),
-                child: Image.network(productFromOrder.imageUrls[0]),
+              child: SliderImages(
+                imagesToSliders: productFromOrder.imageUrls,
+                productUrl: productFromOrder.imageUrls[0],
               ),
             ),
             Flexible(
