@@ -27,9 +27,7 @@ class ProductDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Hero(
-          tag: 'name' + product.uid,
-          child: Text(product.name)),
+        title: Hero(tag: 'name' + product.uid, child: Text(product.name)),
         centerTitle: true,
       ),
       body: Container(
@@ -38,8 +36,14 @@ class ProductDetail extends StatelessWidget {
             Flexible(
               fit: FlexFit.tight,
               child: Hero(
-                tag: product.imageUrls[0],
-                child: Image.network(product.imageUrls[0]),
+                tag: product.imageUrls.isEmpty
+                    ? '${product.uid}-Image'
+                    : product.imageUrls[0],
+                child: product.imageUrls.isEmpty
+                    ? Image.asset('images/empty_url.png')
+                    : product.imageUrls[0].toString().contains('https://')
+                        ? Image.network(product.imageUrls[0])
+                        : Image.asset(product.imageUrls[0]),
               ),
             ),
             Flexible(
@@ -87,8 +91,7 @@ class ProductDetail extends StatelessWidget {
                                 ),
                                 Hero(
                                   tag: 'icon-' + product.uid,
-                                
-                                                                  child: Icon(
+                                  child: Icon(
                                     Icons.add_shopping_cart,
                                     color: Theme.of(context).buttonColor,
                                   ),

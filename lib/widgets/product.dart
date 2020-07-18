@@ -43,8 +43,12 @@ class ProductWidget extends StatelessWidget {
           child: Container(
             color: Colors.white,
             child: Hero(
-              tag: product.imageUrls[0],
-              child: Image.network(product.imageUrls[0]),
+              tag: product.imageUrls.isEmpty ? '${product.uid}-Image' :product.imageUrls[0],
+              child: product.imageUrls.isEmpty
+            ? Image.asset('images/empty_url.png')
+            : product.imageUrls[0].toString().contains('https://')
+                ? Image.network(product.imageUrls[0])
+                : Image.asset(product.imageUrls[0]),
             ),
           ),
         ),

@@ -27,11 +27,11 @@ class _MyProductState extends State<MyProduct> {
   bool _isData = false;
 
   Product _editProduct = Product(
-    uid: null,
-    createUid: null,
-    description: null,
+    uid: '',
+    createUid: '',
+    description: '',
     imageUrls: [],
-    name: null,
+    name: '',
     price: 0.0,
   );
 
@@ -84,7 +84,7 @@ class _MyProductState extends State<MyProduct> {
         });
       } else {
         await Provider.of<Products>(context, listen: false)
-            .editMyProduct(product: _editProduct)
+            .editMyProduct(product: _editProduct, userUid: userUid)
             .then((_) {
           showSnackBar('Saved', Colors.green);
         });
@@ -122,7 +122,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrls: _editProduct.imageUrls,
+                imageUrls: addedImages,
                 name: product.name,
                 price: _editProduct.price,
               );
@@ -131,7 +131,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrls: _editProduct.imageUrls,
+                imageUrls: addedImages,
                 name: val,
                 price: _editProduct.price,
               );
@@ -168,6 +168,14 @@ class _MyProductState extends State<MyProduct> {
                           await picker.getImage(source: ImageSource.gallery);
                       setState(() {
                         addedImages.add(pickedFile.path);
+                        _editProduct = Product(
+                          uid: _editProduct.uid,
+                          createUid: _editProduct.createUid,
+                          description: _editProduct.description,
+                          imageUrls: addedImages,
+                          name: _editProduct.name,
+                          price: _editProduct.price,
+                        );
                         print(addedImages);
                       });
                     },
@@ -254,7 +262,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrls: _editProduct.imageUrls,
+                imageUrls: addedImages,
                 name: _editProduct.name,
                 price: product.price,
               );
@@ -263,7 +271,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: _editProduct.description,
-                imageUrls: _editProduct.imageUrls,
+                imageUrls: addedImages,
                 name: _editProduct.name,
                 price: double.parse(val),
               );
@@ -305,7 +313,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: product.description,
-                imageUrls: _editProduct.imageUrls,
+                imageUrls: addedImages,
                 name: _editProduct.name,
                 price: _editProduct.price,
               );
@@ -314,7 +322,7 @@ class _MyProductState extends State<MyProduct> {
                 uid: product.uid,
                 createUid: product.createUid,
                 description: val,
-                imageUrls: _editProduct.imageUrls,
+                imageUrls: addedImages,
                 name: _editProduct.name,
                 price: _editProduct.price,
               );
