@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class SliderImages extends StatefulWidget {
   final List<String> imagesToSliders;
@@ -17,42 +18,70 @@ class SliderImages extends StatefulWidget {
 class _SliderImagesState extends State<SliderImages> {
   int _current = 0;
 
+  void _fullScreenImage({image}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return Scaffold(
+            body: PhotoView(
+              imageProvider: widget.imagesToSliders.isEmpty
+                  ? AssetImage('images/empty_url.png')
+                  : image.toString().contains('https://')
+                      ? NetworkImage(image)
+                      : AssetImage(image),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _oneImageProduct() {
+    // Gdy jest tylko jedno zdj w aukcji.
+    return Hero(
+      tag: widget.imagesToSliders.isEmpty
+          ? '${widget.productUrl}-Image'
+          : widget.imagesToSliders[0],
+      child: widget.imagesToSliders.isEmpty
+          ? Image.asset('images/empty_url.png')
+          : widget.imagesToSliders[0].toString().contains('https://')
+              ? Image.network(widget.imagesToSliders[0])
+              : Image.asset(widget.imagesToSliders[0]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.imagesToSliders.length == 1
-        ? Hero(
-            tag: widget.imagesToSliders.isEmpty
-                ? '${widget.productUrl}-Image'
-                : widget.imagesToSliders[0],
-            child: widget.imagesToSliders.isEmpty
-                ? Image.asset('images/empty_url.png')
-                : widget.imagesToSliders[0].toString().contains('https://')
-                    ? Image.network(widget.imagesToSliders[0])
-                    : Image.asset(widget.imagesToSliders[0]),
+        ? InkWell(
+            onTap: () {
+              _fullScreenImage(image: widget.imagesToSliders[0]);
+            },
+            child: _oneImageProduct(),
           )
         : Column(children: [
             Expanded(
               child: CarouselSlider(
                 items: widget.imagesToSliders.map((i) {
                   if (i == widget.imagesToSliders[0]) {
-                    return Hero(
-                      tag: widget.imagesToSliders.isEmpty
-                          ? '${widget.productUrl}-Image'
-                          : widget.imagesToSliders[0],
-                      child: widget.imagesToSliders.isEmpty
-                          ? Image.asset('images/empty_url.png')
-                          : widget.imagesToSliders[0]
-                                  .toString()
-                                  .contains('https://')
-                              ? Image.network(widget.imagesToSliders[0])
-                              : Image.asset(widget.imagesToSliders[0]),
+                    return InkWell(
+                      onTap: () {
+                        _fullScreenImage(image: i);
+                      },
+                      child: _oneImageProduct(),
                     );
                   } else {
-                    return widget.imagesToSliders.isEmpty
-                        ? Image.asset('images/empty_url.png')
-                        : i.toString().contains('https://')
-                            ? Image.network(i)
-                            : Image.asset(i);
+                    return InkWell(
+                      onTap: () {
+                        _fullScreenImage(image: i);
+                      },
+                      child: widget.imagesToSliders.isEmpty
+                          ? Image.asset('images/empty_url.png')
+                          : i.toString().contains('https://')
+                              ? Image.network(i)
+                              : Image.asset(i),
+                    );
                   }
                 }).toList(),
                 options: CarouselOptions(
