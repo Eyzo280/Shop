@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/providers/cart.dart';
@@ -34,8 +35,11 @@ class ProductWidget extends StatelessWidget {
         child: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ProductDetail(
-                product: product,
+              return BlocProvider<QuantityProduct>(
+                create: (BuildContext context) => QuantityProduct(),
+                child: ProductDetail(
+                  product: product,
+                ),
               );
             }));
             print('Product Detail');
@@ -43,12 +47,14 @@ class ProductWidget extends StatelessWidget {
           child: Container(
             color: Colors.white,
             child: Hero(
-              tag: product.imageUrls.isEmpty ? '${product.uid}-Image' :product.imageUrls[0],
+              tag: product.imageUrls.isEmpty
+                  ? '${product.uid}-Image'
+                  : product.imageUrls[0],
               child: product.imageUrls.isEmpty
-            ? Image.asset('images/empty_url.png')
-            : product.imageUrls[0].toString().contains('https://')
-                ? Image.network(product.imageUrls[0])
-                : Image.asset(product.imageUrls[0]),
+                  ? Image.asset('images/empty_url.png')
+                  : product.imageUrls[0].toString().contains('https://')
+                      ? Image.network(product.imageUrls[0])
+                      : Image.asset(product.imageUrls[0]),
             ),
           ),
         ),
@@ -66,7 +72,7 @@ class ProductWidget extends StatelessWidget {
                     Hero(
                       tag: 'name' + product.uid,
                       flightShuttleBuilder: flightShuttleBuilder,
-                                          child: Text(
+                      child: Text(
                         product.name,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -86,17 +92,18 @@ class ProductWidget extends StatelessWidget {
                 child: FlatButton(
                   onPressed: () {
                     Provider.of<Cart>(context, listen: false).addItemToCart(
-                        ctx: context,
-                        productUid: product.uid,
-                        name: product.name,
-                        imageUrls: product.imageUrls,
-                        decription: product.description,
-                        price: product.price);
+                      ctx: context,
+                      productUid: product.uid,
+                      name: product.name,
+                      imageUrls: product.imageUrls,
+                      decription: product.description,
+                      price: product.price,
+                      quantity: 1,
+                      snackBar: true,
+                    );
                     print('Add new product');
                   },
-                  child: Hero(
-                    tag: 'icon-' + product.uid,
-                    child: const Icon(Icons.add_shopping_cart),),
+                  child: const Icon(Icons.add_shopping_cart),
                 ),
               ),
             ],

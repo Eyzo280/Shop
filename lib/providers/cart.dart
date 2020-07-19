@@ -17,6 +17,8 @@ class Cart with ChangeNotifier {
     String decription,
     List<String> imageUrls,
     double price,
+    @required int quantity,
+    bool snackBar,
   }) {
     if (_cart.containsKey(productUid)) {
       _cart.update(
@@ -27,7 +29,7 @@ class Cart with ChangeNotifier {
           imageUrls: existingItem.imageUrls,
           decription: existingItem.decription,
           price: existingItem.price,
-          quantity: existingItem.quantity + 1,
+          quantity: existingItem.quantity + quantity,
         ),
       );
     } else {
@@ -39,21 +41,24 @@ class Cart with ChangeNotifier {
             decription: decription,
             name: name,
             price: price,
-            quantity: 1),
+            quantity: quantity),
       );
     }
     notifyListeners();
 
     // Looked SnackBar
-    Scaffold.of(ctx).removeCurrentSnackBar();
-    Scaffold.of(ctx).showSnackBar(
-      snackBarProduct(
-          context: ctx,
-          productUid: productUid,
-          name: name,
-          price: price,
-          quantity: 1),
-    );
+    if (snackBar) {
+      Scaffold.of(ctx).removeCurrentSnackBar();
+      Scaffold.of(ctx).showSnackBar(
+        snackBarProduct(
+            context: ctx,
+            productUid: productUid,
+            name: name,
+            price: price,
+            quantity: quantity),
+      );
+    }
+
     //
     print(_cart);
   }

@@ -15,30 +15,28 @@ class OrdersPage extends StatefulWidget {
 class _OrdersPageState extends State<OrdersPage> {
   String filter = 'All';
 
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool _isData = false;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    setState(() {
-      _isLoading = true;
-    });
 
     if (!_isData) {
       var userUid = Provider.of<User>(context).uid;
-      var isEmpty = Provider.of<Orders>(context).orders.isEmpty;
       Provider.of<Orders>(context, listen: false)
-          .fetchOrders(userUid: userUid, isEmpty: isEmpty)
+          .fetchOrders(userUid: userUid)
           .whenComplete(() {
         setState(() {
           _isData = true;
+          _isLoading = false;
         });
       });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
 
     super.didChangeDependencies();
   }
@@ -97,8 +95,8 @@ class _OrdersPageState extends State<OrdersPage> {
                             },
                             child: Container(
                               color: filter == 'Paided'
-                              ? Color.fromRGBO(0, 0, 0, 0.3)
-                              : Color.fromRGBO(0, 0, 0, 0),
+                                  ? Color.fromRGBO(0, 0, 0, 0.3)
+                                  : Color.fromRGBO(0, 0, 0, 0),
                               child: Center(
                                 child: Text('Paided'),
                               ),

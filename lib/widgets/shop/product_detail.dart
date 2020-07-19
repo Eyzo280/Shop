@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/models/product.dart';
 import 'package:shopapp/providers/cart.dart';
 import 'package:shopapp/widgets/slider_images.dart';
+
+enum QuantityEvent { increment, decrement }
+
+class QuantityProduct extends Bloc<QuantityEvent, int> {
+  QuantityProduct() : super(1);
+
+  @override
+  Stream<int> mapEventToState(QuantityEvent event) async* {
+    switch (event) {
+      case QuantityEvent.decrement:
+        yield state - 1;
+        break;
+      case QuantityEvent.increment:
+        yield state + 1;
+        break;
+    }
+  }
+}
 
 class ProductDetail extends StatelessWidget {
   final Product product;
@@ -54,20 +73,9 @@ class ProductDetail extends StatelessWidget {
                         fit: FlexFit.tight,
                         child: Builder(builder: (BuildContext ctx) {
                           // Builder byl potrzebny, aby mozna tu bylo uzywac SnackBar
-                          return FlatButton(
-                            onPressed: () {
-                              Provider.of<Cart>(context, listen: false)
-                                  .addItemToCart(
-                                      ctx: ctx,
-                                      productUid: product.uid,
-                                      name: product.name,
-                                      imageUrls: product.imageUrls,
-                                      decription: product.description,
-                                      price: product.price);
-
-                              print('Add to cart');
-                            },
-                            child: Row(
+                          return BlocBuilder<QuantityProduct, int>(
+                              builder: (context, count) {
+                            return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
                                 Hero(
@@ -79,21 +87,51 @@ class ProductDetail extends StatelessWidget {
                                         color: Theme.of(context).buttonColor),
                                   ),
                                 ),
-                                Text(
-                                  'Add To Cart',
-                                  style: TextStyle(
-                                      color: Theme.of(context).buttonColor),
+                                Row(
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(Icons.remove),
+                                      onPressed: count <= 1
+                                          ? null
+                                          : () => context
+                                              .bloc<QuantityProduct>()
+                                              .add(QuantityEvent.decrement),
+                                    ),
+                                    Text(
+                                      count.toString(),
+                                      style: TextStyle(
+                                          color: Theme.of(context).buttonColor),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.add),
+                                      onPressed: () => context
+                                          .bloc<QuantityProduct>()
+                                          .add(QuantityEvent.increment),
+                                    )
+                                  ],
                                 ),
-                                Hero(
-                                  tag: 'icon-' + product.uid,
-                                  child: Icon(
-                                    Icons.add_shopping_cart,
-                                    color: Theme.of(context).buttonColor,
-                                  ),
-                                )
+                                IconButton(
+                                  onPressed: () {
+                                    Provider.of<Cart>(context, listen: false)
+                                        .addItemToCart(
+                                      ctx: ctx,
+                                      productUid: product.uid,
+                                      name: product.name,
+                                      imageUrls: product.imageUrls,
+                                      decription: product.description,
+                                      price: product.price,
+                                      quantity: count,
+                                      snackBar: true,
+                                    );
+
+                                    print('Add to cart');
+                                  },
+                                  icon: Icon(Icons.add_shopping_cart),
+                                  color: Theme.of(context).buttonColor,
+                                ),
                               ],
-                            ),
-                          );
+                            );
+                          });
                         }),
                       ),
                       const Divider(),
@@ -107,14 +145,30 @@ class ProductDetail extends StatelessWidget {
                             children: <Widget>[
                               Text(
                                   'Noś na wakacje lub w weekend. Możesz także założyć je do skarpetek (o gustach się nie dyskutuje). Od lat 70. klapki adidas Adilette są kultowym modelem w stylu z 3 paskami. Ta wersja ma miękką gumową podeszwę i szybkoschnący górny pasek, który pozwoli przejść z szatni na promenadę.'),
-                              RaisedButton(
-                                onPressed: () {
-                                  print('Buy Now');
-                                },
-                                elevation: 8,
-                                textColor: Colors.white,
-                                child: const Text('Buy Now'),
-                              ),
+                              BlocBuilder<QuantityProduct, int>(
+                                  builder: (ctx, count) {
+                                return RaisedButton(
+                                  onPressed: () {
+                                    Provider.of<Cart>(context, listen: false)
+                                        .addItemToCart(
+                                      ctx: ctx,
+                                      productUid: product.uid,
+                                      name: product.name,
+                                      imageUrls: product.imageUrls,
+                                      decription: product.description,
+                                      price: product.price,
+                                      quantity: count,
+                                      snackBar: false,
+                                    );
+                                    Navigator.pushReplacementNamed(
+                                        context, '/Cart');
+                                    print('Buy Now');
+                                  },
+                                  elevation: 8,
+                                  textColor: Colors.white,
+                                  child: const Text('Buy Now'),
+                                );
+                              }),
                             ],
                           ),
                         ),

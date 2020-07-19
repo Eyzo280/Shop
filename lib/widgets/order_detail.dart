@@ -6,12 +6,12 @@ import 'package:shopapp/widgets/slider_images.dart';
 class OrderDetail extends StatelessWidget {
   final ProductFromOrder productFromOrder;
   final String orderDateOfPurchase;
-  final int index;
+  final String orderUid;
 
   OrderDetail({
     this.productFromOrder,
     this.orderDateOfPurchase,
-    this.index,
+    this.orderUid,
   });
 
   Widget flightShuttleBuilder(
@@ -32,7 +32,7 @@ class OrderDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Hero(
-            tag: 'name' + productFromOrder.name + index.toString(),
+            tag: 'name' + productFromOrder.name + orderUid,
             child: Text(productFromOrder.name)),
         centerTitle: true,
       ),
@@ -43,7 +43,7 @@ class OrderDetail extends StatelessWidget {
               fit: FlexFit.tight,
               child: SliderImages(
                 imagesToSliders: productFromOrder.imageUrls,
-                productUrl: productFromOrder.imageUrls[0]+index.toString()
+                productUrl: productFromOrder.imageUrls[0] + orderUid,
               ),
             ),
             Flexible(
@@ -64,7 +64,7 @@ class OrderDetail extends StatelessWidget {
                             children: <Widget>[
                               Hero(
                                 tag: productFromOrder.price.toString() +
-                                    index.toString(),
+                                    orderUid,
                                 flightShuttleBuilder: flightShuttleBuilder,
                                 child: Text(
                                   '${productFromOrder.price.toString()} \$',

@@ -10,9 +10,9 @@ class Orders with ChangeNotifier {
 
   Map<String, List<ProductFromOrder>> _productsFromOrder = {};
 
-  Future fetchOrders({String userUid, bool isEmpty}) async {
+  Future fetchOrders({String userUid}) async {
     try {
-      if (isEmpty) {
+      if (_orders.isEmpty) {
         await _firestore
             .document(userUid)
             .collection('Orders')
