@@ -76,9 +76,13 @@ class Cart with ChangeNotifier {
                 imageUrls: existingItem.imageUrls,
                 decription: existingItem.decription,
                 price: existingItem.price,
-                quantity: existingItem.quantity - 1,
+                quantity: existingItem.quantity - removeQuantity,
               ),
             );
+            if (_cart[i].quantity == 0) {
+              _cart.remove(productUid);
+              break;
+            }
           } else {
             _cart.remove(productUid);
             break;
