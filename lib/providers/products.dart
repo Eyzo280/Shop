@@ -20,7 +20,7 @@ class Products with ChangeNotifier {
         description: doc['description'] ?? null,
         imageUrls: List<String>.from(doc.data['imageUrls']) ?? null,
         name: doc['name'] ?? null,
-        price: doc['price'] ?? null,
+        price: double.parse(doc['price'].toString()) ?? null,
       );
     }).toList();
   }
@@ -42,7 +42,7 @@ class Products with ChangeNotifier {
                       imageUrls:
                           List<String>.from(doc.data['imageUrls']) ?? null,
                       name: doc.data['name'] ?? null,
-                      price: doc.data['price'] ?? null,
+                      price: double.parse(doc['price'].toString()) ?? null,
                     ));
           }
         }).whenComplete(() {

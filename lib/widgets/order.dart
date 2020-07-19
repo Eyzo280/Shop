@@ -110,7 +110,7 @@ class _OrderState extends State<Order> {
                           },
                           leading: Hero(
                             tag: '${products[index].imageUrls[0]}${widget.orderUid}-Image',
-                            child: Image.network(products[index].imageUrls[0])),
+                            child: Image.network(products[index].imageUrls[0],width: 50,)),
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[

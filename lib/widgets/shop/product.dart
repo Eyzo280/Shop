@@ -51,10 +51,10 @@ class ProductWidget extends StatelessWidget {
                   ? '${product.uid}-Image'
                   : product.imageUrls[0],
               child: product.imageUrls.isEmpty
-                  ? Image.asset('images/empty_url.png')
+                  ? Image.asset('images/empty_url.png', fit:  BoxFit.fitHeight,)
                   : product.imageUrls[0].toString().contains('https://')
-                      ? Image.network(product.imageUrls[0])
-                      : Image.asset(product.imageUrls[0]),
+                      ? Image.network(product.imageUrls[0], fit:  BoxFit.fitHeight)
+                      : Image.asset(product.imageUrls[0], fit:  BoxFit.fitHeight),
             ),
           ),
         ),

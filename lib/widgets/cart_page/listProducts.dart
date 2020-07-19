@@ -71,7 +71,7 @@ class _CartListProductsState extends State<CartListProducts>
                         print('Detail');
                       },
                       leading:
-                          Image.network(widget.cartProducts[index].imageUrls[0]),
+                          Image.network(widget.cartProducts[index].imageUrls[0],width: 50,),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[

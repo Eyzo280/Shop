@@ -408,10 +408,19 @@ class _MyProductState extends State<MyProduct> {
     return Card(
       child: ListTile(
         leading: addedImages.isEmpty
-            ? Image.asset('images/empty_url.png')
+            ? Image.asset(
+                'images/empty_url.png',
+                width: 50,
+              )
             : addedImages[0].toString().contains('https://')
-                ? Image.network(addedImages[0])
-                : Image.asset(addedImages[0]),
+                ? Image.network(
+                    addedImages[0],
+                    width: 50,
+                  )
+                : Image.asset(
+                    addedImages[0],
+                    width: 50,
+                  ),
         title: AnimatedContainer(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn,
